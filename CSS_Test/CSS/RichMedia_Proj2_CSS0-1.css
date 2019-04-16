@@ -1,0 +1,40 @@
+/*Start: General*/
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+/*End: General*/
+
+/*Start: Button*/
+button{
+    background-color: rgb(231, 231, 231);
+    width: 66.5px;
+    height: 33px; 
+    border: none;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+button:hover{
+    background-color: rgb(240, 240, 240);
+    border-width: 2px;
+    border-style: ridge;
+    cursor: pointer;
+}
+
+.button{
+    appearance: none;
+    display: inline-block;
+    width: 66.5px;
+    height: 33px;
+}
+
+button:active{
+    width: 62.5px;
+    height: 30px;
+    margin-left: 2px;
+    margin-top: 1.5px;
+}
+/*End: Button*/
