@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+    <script src="//unpkg.com/@babel/polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+    <title>MapQuakeEat</title>
+</head>
+
+<body>
+    <div id="mqa-root">
+        <div id="map"></div>
+        <div id="results">
+            <div id="loading" v-show="loading"></div>
+            <search-result v-for="result in results" v-bind:result="result"></search-result>
+        </div>
+    </div>
+    <script>
+        class Results {
+            static _getEarthquakes() {
+                if (Results.earthquakes) {
+                    return Promise.resolve(Results.earthquakes);
+                } else {
+                    return fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson')
+                        .then(r => r.json())
+                        .then(r => Results.earthquakes = r);
+                }
+            }
+
+            static search(term, location) {
+                let reqUrl = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key=AIzaSyDjncHpQdRfjHbDiAyXF8Q-n8UNZ1VHg0w&input=${term}&inputtype=textquery&locationbias=point:${location.lat},${location.lng}&fields=geometry/location,icon,name`;
+                Promise.all([
+                    Results._getEarthquakes(),
+                    fetch(reqUrl).then(r => r.json()),
+                ]).then(p => {
+                    let [eqs, results] = p;
+
+                })
+            }
+
+            constructor(raw_result) {
+
+            }
+        }
+
+        Vue.component('search-result', {
+            props: ['result'],
+            template: '<div>' +
+                '<h2>{{ result.name }}</h2>' +
+                '<img v-bind:src="result.icon" />' +
+                '<p>{{ result.description }}</p>' +
+                '<ul>' +
+                    '<li v-for="e in result.earthquakes">' +
+                        'Magnitude {{ e.mag }} at {{ e.location }} ({{ e.dist }} mi away)' +
+                    '</li>' +
+                '</ul>' +
+            '</div>',
+            
+        });
+
+        let app = new Vue({
+            el: '#mqe-root',
+            data: {
+                loading: false,
+                results: [],
+            },
+            methods: {
+                search() {
+                    this.results = Restaurants.search(/* TODO location */);
+                }
+            }
+        })
+
+        function mqeRun() {
+
+        }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjncHpQdRfjHbDiAyXF8Q-n8UNZ1VHg0w&callback=mqeRun"
+        async defer></script>
+</body>
+
+</html>
