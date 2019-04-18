@@ -197,7 +197,7 @@
                 this.earthquakes = eqs.map(e => {
                     e.distance = geo_distance(e, this.location);
                     return e;
-                }).filter(e => e.distance < 2500).sort((l, r) => l.distance - r.distance);
+                }).filter(e => e.distance < 2500 /* miles */).sort((l, r) => l.distance - r.distance);
             }
         }
         Result.PLACES_SVC = new google.maps.places.PlacesService(document.querySelector("#gm-attrib"));
@@ -229,7 +229,7 @@
             methods: {
                 doSearch() {
                     this.loading = true;
-                    Result.search(this.type, { lat: 43.0830354, lng: -77.6804358 })
+                    Result.search(this.type, { lat: 34.0522, lng: -118.2437 })
                         .then(r => this.results = r).then(_ => this.loading = false);
                 }
             }
