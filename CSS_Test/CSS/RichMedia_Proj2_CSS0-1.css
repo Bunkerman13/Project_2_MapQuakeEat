@@ -111,6 +111,8 @@ input[type=search]:focus
     height: 25px;
     width: 25px;
     background-color: rgb(216, 216, 216);
+    margin-left: 5px;
+    margin-top: 5px;
 }
 
 .checkbox:hover input ~ .check{
@@ -146,7 +148,7 @@ input[type=search]:focus
 .checkbox .check::after{
     width: 25px;
     height: 25px;
-    left: 4px;
+    left: -1.5px;
     top: -7px;
     
 }
@@ -182,7 +184,8 @@ input[type=search]:focus
     height: 25px;
     width: 25px;
     background-color: rgb(216, 216, 216);
-    /* border: 2px solid black; */
+    margin-left: 5px;
+    margin-top: 5px;
     border-radius: 50%;
   }
 
@@ -242,8 +245,161 @@ input[type=search]:focus
   .radio .check:after {
     width: 25px;
     height: 25px;
-    left: 4px;
+    left: -1.5px;
     top: -7px;
   }
   
 /*End: Radio*/
+
+/* #radios {
+    float: left;
+}
+
+#radios2 {
+    float: right;
+} */
+
+/*Start: Range Slider*/
+.slidecontainer {
+    width: 100%; 
+  }
+  
+  .slider {
+    -webkit-appearance: none;  
+    appearance: none;
+    width: 200px; 
+    height: 25px; 
+    background: rgb(216, 216, 216); 
+    outline: none; 
+    /* opacity: 0.7;  */
+    /* -webkit-transition: .2s; 
+    transition: opacity .2s; */
+  }
+  
+  .slider:hover {
+    /* opacity: 1;  */
+    background: rgb(231, 231, 231);
+    border-width: 2px;
+    /* border-style: ridge; */
+  }
+
+  .slider:active {
+    background: rgb(231, 231, 231);
+    border-width: 2px;
+    border-style: ridge;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    appearance: none;
+    width: 25px;
+    height: 25px; 
+    background: black; 
+    border-radius: 50px;
+    cursor: pointer; 
+  }
+
+  .slider::-webkit-slider-thumb:active {
+    -webkit-appearance: none; 
+    appearance: none;
+    width: 25px;
+    height: 25px; 
+    background: rgb(43, 43, 43); 
+    border-radius: 50px;
+    cursor: pointer; 
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px; 
+    height: 25px; 
+    background: black; 
+    border-radius: 50px;
+    cursor: pointer; 
+  }
+
+  .slider::-moz-range-thumb:active {
+    width: 25px; 
+    height: 25px; 
+    background: rgb(43, 43, 43); 
+    border-radius: 50px;
+    cursor: pointer; 
+  }
+/*End: Range Slider*/
+
+/*Start: Generic - Search*/
+section {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#radios {
+    order: 1;
+}
+
+#radios2 {
+    order: 3;
+}
+
+#range {
+    order: 2;
+}
+
+#radios, #radios2, #range {
+    margin: 0 auto;
+}
+/*End: Generoc - Search*/
+
+/*Start: Generic - Results*/
+.search-result {
+    border-width: 5px;
+    width: 35%;
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    border-style: ridge;
+    margin: 5px;
+    height: 100%;
+    background-color: rgb(216, 216, 216);
+}
+
+#search,
+#results {
+    text-align: center;
+}
+
+#results p {
+    width: 90%;
+}
+
+#bar {
+    height: 50px;
+}
+
+.slidecontainer strong{
+    font-size: x-large;
+}
+
+#results {
+    /* padding: 100px; */
+    height: 100%;
+}
+
+ul {
+    height: 310px;
+    overflow-y: scroll;
+    border-style: ridge;
+    border-width: 5px;
+    padding: 1%;
+
+}
+
+h1 {
+    text-align: center;
+}
+
+h3 {
+    height: 50px;
+    font-size: medium;
+}
+/*End: Generic - Results*/

@@ -4,118 +4,155 @@
 <head>
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
+    <link type="text/css" rel="stylesheet" href="CSS_Test/CSS/RichMedia_Proj2_CSS0-1.css">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjncHpQdRfjHbDiAyXF8Q-n8UNZ1VHg0w&libraries=places"
         type="text/javascript"></script>
     <script src="//unpkg.com/@babel/polyfill@latest/dist/polyfill.min.js" type="text/javascript"></script>
     <script src="//unpkg.com/vue@latest/dist/vue.min.js" type="text/javascript"></script>
     <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js" type="text/javascript"></script>
 
-    <style>
-        .search-result {
-            border: 1px solid black;
-        }
-
-    </style>
-
-    <title>MapQuakeEat</title>
+    <title>MapQuakeFind</title>
 </head>
 
 <body>
     <div id="mqe-root">
+        <h1>Map, Quake, Find</h1>
         <div id="search">
-            <select v-model="type">
-                <option value="accounting">accounting</option>
-                <option value="airport">airport</option>
-                <option value="amusement_park">amusement_park</option>
-                <option value="aquarium">aquarium</option>
-                <option value="art_gallery">art_gallery</option>
-                <option value="atm">atm</option>
-                <option value="bakery">bakery</option>
-                <option value="bank">bank</option>
-                <option value="bar">bar</option>
-                <option value="beauty_salon">beauty_salon</option>
-                <option value="bicycle_store">bicycle_store</option>
-                <option value="book_store">book_store</option>
-                <option value="bowling_alley">bowling_alley</option>
-                <option value="bus_station">bus_station</option>
-                <option value="cafe">cafe</option>
-                <option value="campground">campground</option>
-                <option value="car_dealer">car_dealer</option>
-                <option value="car_rental">car_rental</option>
-                <option value="car_repair">car_repair</option>
-                <option value="car_wash">car_wash</option>
-                <option value="casino">casino</option>
-                <option value="cemetery">cemetery</option>
-                <option value="church">church</option>
-                <option value="city_hall">city_hall</option>
-                <option value="clothing_store">clothing_store</option>
-                <option value="convenience_store">convenience_store</option>
-                <option value="courthouse">courthouse</option>
-                <option value="dentist">dentist</option>
-                <option value="department_store">department_store</option>
-                <option value="doctor">doctor</option>
-                <option value="electrician">electrician</option>
-                <option value="electronics_store">electronics_store</option>
-                <option value="embassy">embassy</option>
-                <option value="fire_station">fire_station</option>
-                <option value="florist">florist</option>
-                <option value="funeral_home">funeral_home</option>
-                <option value="furniture_store">furniture_store</option>
-                <option value="gas_station">gas_station</option>
-                <option value="gym">gym</option>
-                <option value="hair_care">hair_care</option>
-                <option value="hardware_store">hardware_store</option>
-                <option value="hindu_temple">hindu_temple</option>
-                <option value="home_goods_store">home_goods_store</option>
-                <option value="hospital">hospital</option>
-                <option value="insurance_agency">insurance_agency</option>
-                <option value="jewelry_store">jewelry_store</option>
-                <option value="laundry">laundry</option>
-                <option value="lawyer">lawyer</option>
-                <option value="library">library</option>
-                <option value="liquor_store">liquor_store</option>
-                <option value="local_government_office">local_government_office</option>
-                <option value="locksmith">locksmith</option>
-                <option value="lodging">lodging</option>
-                <option value="meal_delivery">meal_delivery</option>
-                <option value="meal_takeaway">meal_takeaway</option>
-                <option value="mosque">mosque</option>
-                <option value="movie_rental">movie_rental</option>
-                <option value="movie_theater">movie_theater</option>
-                <option value="moving_company">moving_company</option>
-                <option value="museum">museum</option>
-                <option value="night_club">night_club</option>
-                <option value="painter">painter</option>
-                <option value="park">park</option>
-                <option value="parking">parking</option>
-                <option value="pet_store">pet_store</option>
-                <option value="pharmacy">pharmacy</option>
-                <option value="physiotherapist">physiotherapist</option>
-                <option value="plumber">plumber</option>
-                <option value="police">police</option>
-                <option value="post_office">post_office</option>
-                <option value="real_estate_agency">real_estate_agency</option>
-                <option value="restaurant" selected>restaurant</option>
-                <option value="roofing_contractor">roofing_contractor</option>
-                <option value="rv_park">rv_park</option>
-                <option value="school">school</option>
-                <option value="shoe_store">shoe_store</option>
-                <option value="shopping_mall">shopping_mall</option>
-                <option value="spa">spa</option>
-                <option value="stadium">stadium</option>
-                <option value="storage">storage</option>
-                <option value="store">store</option>
-                <option value="subway_station">subway_station</option>
-                <option value="supermarket">supermarket</option>
-                <option value="synagogue">synagogue</option>
-                <option value="taxi_stand">taxi_stand</option>
-                <option value="train_station">train_station</option>
-                <option value="transit_station">transit_station</option>
-                <option value="travel_agency">travel_agency</option>
-                <option value="veterinary_care">veterinary_care</option>
-                <option value="zoo">zoo</option>
-            </select>
-            <button @click="doSearch">Search</button>
+            <div id="bar">
+                <select v-model="type">
+                    <option value="accounting">accounting</option>
+                    <option value="airport">airport</option>
+                    <option value="amusement_park">amusement_park</option>
+                    <option value="aquarium">aquarium</option>
+                    <option value="art_gallery">art_gallery</option>
+                    <option value="atm">atm</option>
+                    <option value="bakery">bakery</option>
+                    <option value="bank">bank</option>
+                    <option value="bar">bar</option>
+                    <option value="beauty_salon">beauty_salon</option>
+                    <option value="bicycle_store">bicycle_store</option>
+                    <option value="book_store">book_store</option>
+                    <option value="bowling_alley">bowling_alley</option>
+                    <option value="bus_station">bus_station</option>
+                    <option value="cafe">cafe</option>
+                    <option value="campground">campground</option>
+                    <option value="car_dealer">car_dealer</option>
+                    <option value="car_rental">car_rental</option>
+                    <option value="car_repair">car_repair</option>
+                    <option value="car_wash">car_wash</option>
+                    <option value="casino">casino</option>
+                    <option value="cemetery">cemetery</option>
+                    <option value="church">church</option>
+                    <option value="city_hall">city_hall</option>
+                    <option value="clothing_store">clothing_store</option>
+                    <option value="convenience_store">convenience_store</option>
+                    <option value="courthouse">courthouse</option>
+                    <option value="dentist">dentist</option>
+                    <option value="department_store">department_store</option>
+                    <option value="doctor">doctor</option>
+                    <option value="electrician">electrician</option>
+                    <option value="electronics_store">electronics_store</option>
+                    <option value="embassy">embassy</option>
+                    <option value="fire_station">fire_station</option>
+                    <option value="florist">florist</option>
+                    <option value="funeral_home">funeral_home</option>
+                    <option value="furniture_store">furniture_store</option>
+                    <option value="gas_station">gas_station</option>
+                    <option value="gym">gym</option>
+                    <option value="hair_care">hair_care</option>
+                    <option value="hardware_store">hardware_store</option>
+                    <option value="hindu_temple">hindu_temple</option>
+                    <option value="home_goods_store">home_goods_store</option>
+                    <option value="hospital">hospital</option>
+                    <option value="insurance_agency">insurance_agency</option>
+                    <option value="jewelry_store">jewelry_store</option>
+                    <option value="laundry">laundry</option>
+                    <option value="lawyer">lawyer</option>
+                    <option value="library">library</option>
+                    <option value="liquor_store">liquor_store</option>
+                    <option value="local_government_office">local_government_office</option>
+                    <option value="locksmith">locksmith</option>
+                    <option value="lodging">lodging</option>
+                    <option value="meal_delivery">meal_delivery</option>
+                    <option value="meal_takeaway">meal_takeaway</option>
+                    <option value="mosque">mosque</option>
+                    <option value="movie_rental">movie_rental</option>
+                    <option value="movie_theater">movie_theater</option>
+                    <option value="moving_company">moving_company</option>
+                    <option value="museum">museum</option>
+                    <option value="night_club">night_club</option>
+                    <option value="painter">painter</option>
+                    <option value="park">park</option>
+                    <option value="parking">parking</option>
+                    <option value="pet_store">pet_store</option>
+                    <option value="pharmacy">pharmacy</option>
+                    <option value="physiotherapist">physiotherapist</option>
+                    <option value="plumber">plumber</option>
+                    <option value="police">police</option>
+                    <option value="post_office">post_office</option>
+                    <option value="real_estate_agency">real_estate_agency</option>
+                    <option value="restaurant" selected>restaurant</option>
+                    <option value="roofing_contractor">roofing_contractor</option>
+                    <option value="rv_park">rv_park</option>
+                    <option value="school">school</option>
+                    <option value="shoe_store">shoe_store</option>
+                    <option value="shopping_mall">shopping_mall</option>
+                    <option value="spa">spa</option>
+                    <option value="stadium">stadium</option>
+                    <option value="storage">storage</option>
+                    <option value="store">store</option>
+                    <option value="subway_station">subway_station</option>
+                    <option value="supermarket">supermarket</option>
+                    <option value="synagogue">synagogue</option>
+                    <option value="taxi_stand">taxi_stand</option>
+                    <option value="train_station">train_station</option>
+                    <option value="transit_station">transit_station</option>
+                    <option value="travel_agency">travel_agency</option>
+                    <option value="veterinary_care">veterinary_care</option>
+                    <option value="zoo">zoo</option>
+                </select>
+
+                <button @click="doSearch">Search</button>
+            </div>
+            <section>
+                <div id="radios">
+                    Radius:
+                    <label class="radio"><strong>1</strong>
+                        <input type="radio" checked="checked" name="radio">
+                        <span class="check"></span>
+                    </label>
+                    <label class="radio"><strong>5</strong>
+                        <input type="radio" name="radio">
+                        <span class="check"></span>
+                    </label>
+                    <label class="radio"><strong>10</strong>
+                        <input type="radio" name="radio">
+                        <span class="check"></span>
+                    </label>
+                </div>
+                <div id="radios2">
+                    Amount:
+                    <label class="radio"><strong>2</strong>
+                        <input type="radio" checked="checked" name="radio2">
+                        <span class="check"></span>
+                    </label>
+                    <label class="radio"><strong>4</strong>
+                        <input type="radio" name="radio2">
+                        <span class="check"></span>
+                    </label>
+                    <label class="radio"><strong>MAX</strong>
+                        <input type="radio" name="radio2">
+                        <span class="check"></span>
+                    </label>
+                </div>
+                <div id="range">
+
+                    <div class="slidecontainer">Zoom Slider: <strong>-</strong>
+                        <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                        <strong>+</strong></div>
+
+                </div>
+            </section>
         </div>
         <div id="results">
             <div id="gm-attrib"></div>
@@ -124,6 +161,7 @@
         </div>
     </div>
     <script>
+
         function d2r(degrees) {
             return degrees / 180 * Math.PI;
         }
@@ -164,7 +202,7 @@
                 }
             }
 
-            static search(term, location) {
+            static search(term, location, max) {
                 let mapsPromise = new Promise((ok, err) => {
                     Result.PLACES_SVC.nearbySearch({
                         type: term,
@@ -173,6 +211,8 @@
                     }, (res, status) => {
                         if (status == google.maps.places.PlacesServiceStatus.OK) {
                             console.log("res", res);
+                            this.maxObjects = res.length;
+                            console.log(this.maxObjects);
                             ok(res);
                         } else {
                             err({ code: status, data: res });
@@ -208,7 +248,7 @@
                 required: true,
             },
             template: '<div class="search-result">' +
-                '<h2>{{ result.name }}</h2>' +
+                '<h3>{{ result.name }}</h3>' +
                 '<img v-bind:src="result.icon" />' +
                 '<p>{{ result.location_pretty }} ({{ result.plus_code }})</p>' +
                 '<ul>' +
@@ -225,11 +265,12 @@
                 loading: false,
                 results: [],
                 type: "restaurant",
+                maxObjects: 0,
             },
             methods: {
                 doSearch() {
                     this.loading = true;
-                    Result.search(this.type, { lat: 34.0522, lng: -118.2437 })
+                    Result.search(this.type, { lat: 34.0522, lng: -118.2437 }, this.maxObjects)
                         .then(r => this.results = r).then(_ => this.loading = false);
                 }
             }
