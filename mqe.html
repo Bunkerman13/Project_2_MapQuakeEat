@@ -152,7 +152,10 @@
                         <strong>+</strong></div>
 
                 </div>
+
+
             </section>
+            <div id="map"></div>
         </div>
         <div id="results">
             <div id="gm-attrib"></div>
@@ -160,6 +163,9 @@
             <search-result v-for="result in results" v-bind:result="result"></search-result>
         </div>
     </div>
+    <script src="JS/map.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVRuIR2xgRM8xP8Djo-q86fP_ITSQoyKw&callback=initMap"
+        async defer></script>
     <script>
 
         function d2r(degrees) {
@@ -265,6 +271,7 @@
                 loading: false,
                 results: [],
                 type: "restaurant",
+                map: {},
                 maxObjects: 0,
             },
             methods: {
@@ -275,7 +282,35 @@
                 }
             }
         });
+
+        let map;
+        let infoWindow;
+        function initMap() {
+            let mapOptions = {
+                center: { lat: 37.0902, lng: -95.7129 },
+                zoom: 3,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+            
+            // for future reference
+            // let position = {lat:43.082634, lng:-77.68004};
+            // let marker = new google.maps.Marker ({position:position, map: map});
+            // marker.setTitle("Crossroads");
+        }
+
+        function InfoWindow(position, msg) {
+            if (infoWindow) infoWindow.close();
+
+            infoWindow = new google.maps.InfoWindow({
+                map: map,
+                position: position,
+                content: "<b>" + msg + "</b>"
+            });
+        }
     </script>
+
 </body>
 
 </html>
