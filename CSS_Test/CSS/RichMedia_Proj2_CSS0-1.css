@@ -404,6 +404,13 @@ h3 {
 }
 /*End: Generic - Results*/
 
+/*Start - text*/
+input[type=text] {
+    width: 50px;
+    height: 25px;
+}
+/*End - text*/
+
 #map{
     margin: 0 auto;
     width: 400px;

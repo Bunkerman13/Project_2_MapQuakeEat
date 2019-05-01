@@ -148,6 +148,11 @@
                     <option value="zoo">zoo</option>
                 </select>
 
+
+                <input type="text" v-model="searchLat">Lat
+
+                <input type="text" v-model="searchLng">Lng
+
                 <button @click="doSearch">Search</button>
             </div>
             <section>
@@ -251,11 +256,11 @@
                     }, (res, status) => {
                         if (status == google.maps.places.PlacesServiceStatus.OK) {
                             console.log("res", res);
+                            console.log(location);
                             this.maxObjects = res.length;
                             ///
                             // Reinitialize map and add new markers based on new elements
                             // Edited by Elliot Privateer
-                            
                             initMap(SetMap(res, map), 9.9);
                             CreateMarkers(res, map);
                             ///
@@ -317,24 +322,23 @@
                 // let marker = new google.maps.Marker ({position:position, map: map});
                 // marker.setTitle("Crossroads");
 
-                let position = {lat: positions[x].geometry.location.lat(), lng: positions[x].geometry.location.lng()};
+                let position = { lat: positions[x].geometry.location.lat(), lng: positions[x].geometry.location.lng() };
                 let marker = new google.maps.Marker({ position: position, map: map });
                 marker.setTitle(positions[x].name);
             }
         }
 
-        function SetMap(positions, map){
+        function SetMap(positions, map) {
             let tempLat = 0;
             let tempLng = 0;
-            for(let x = 0; x < positions.length; x++)
-            {
+            for (let x = 0; x < positions.length; x++) {
                 tempLat += positions[x].geometry.location.lat();
                 tempLng += positions[x].geometry.location.lng();
             }
             tempLat /= positions.length;
             tempLng /= positions.length;
 
-            return {lat: tempLat+.03, lng: tempLng+.07};
+            return { lat: tempLat + .03, lng: tempLng + .07 };
         }
         ///
 
@@ -344,6 +348,8 @@
                 loading: false,
                 results: [],
                 type: "restaurant",
+                searchLat: 34.0522,
+                searchLng: -118.2437,
                 map: map,
                 maxObjects: 0,
             },
@@ -351,9 +357,11 @@
 
                 doSearch() {
                     this.loading = true;
-                    Result.search(this.type, { lat: 34.0522, lng: -118.2437 }, this.maxObjects)
+                    // Result.search(this.type, { lat: 34.0522, lng: -118.2437 }, this.maxObjects)
+                    //     .then(r => this.results = r).then(_ => this.loading = false);//.then(initMap());
+                    Result.search(this.type, { lat: parseFloat(this.searchLat), lng: parseFloat(this.searchLng) }, this.maxObjects)
                         .then(r => this.results = r).then(_ => this.loading = false);//.then(initMap());
-
+                    
                 }
 
             }
