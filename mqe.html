@@ -6,15 +6,16 @@
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
     <link type="text/css" rel="stylesheet" href="CSS_Test/CSS/RichMedia_Proj2_CSS0-1.css">
     <script>
+        ///
         // Main structure of map functionality borrowed from Maps HW
         // Edited by Elliot Privateer
         // https://github.com/tonethar/IGME-330-Master/blob/master/notes/_files/Maps-1.pdf
         let map;
         let infoWindow;
-        window.onload = function initMap() {
+        function initMap(loc, zoom) {
             let mapOptions = {
-                center: { lat: 37.0902, lng: -95.7129 },
-                zoom: 3,
+                center: loc,//{ lat: 37.0902, lng: -95.7129 },
+                zoom: zoom,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -26,6 +27,8 @@
             // marker.setTitle("Crossroads");
         }
 
+
+
         function InfoWindow(position, msg) {
             if (infoWindow) infoWindow.close();
 
@@ -35,6 +38,8 @@
                 content: "<b>" + msg + "</b>"
             });
         }
+        ///
+
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjncHpQdRfjHbDiAyXF8Q-n8UNZ1VHg0w&libraries=places"
         type="text/javascript"></script>
@@ -197,7 +202,6 @@
     <script src="JS/map.js"></script>
 
     <script>
-
         function d2r(degrees) {
             return degrees / 180 * Math.PI;
         }
@@ -248,6 +252,13 @@
                         if (status == google.maps.places.PlacesServiceStatus.OK) {
                             console.log("res", res);
                             this.maxObjects = res.length;
+                            ///
+                            // Reinitialize map and add new markers based on new elements
+                            // Edited by Elliot Privateer
+                            
+                            initMap(SetMap(res, map), 9.9);
+                            CreateMarkers(res, map);
+                            ///
                             console.log(this.maxObjects);
                             ok(res);
                         } else {
@@ -295,53 +306,63 @@
                 '</div>',
         });
 
+        ///
+        // Creates a markers based on how many results are returned
+        // from the search
+        // Edited by Elliot Privateer
+        function CreateMarkers(positions, map) {
+            //console.log(positions[0].name);
+            for (let x = 0; x < positions.length; x++) {
+                // let position = {lat:43.082634, lng:-77.68004};
+                // let marker = new google.maps.Marker ({position:position, map: map});
+                // marker.setTitle("Crossroads");
+
+                let position = {lat: positions[x].geometry.location.lat(), lng: positions[x].geometry.location.lng()};
+                let marker = new google.maps.Marker({ position: position, map: map });
+                marker.setTitle(positions[x].name);
+            }
+        }
+
+        function SetMap(positions, map){
+            let tempLat = 0;
+            let tempLng = 0;
+            for(let x = 0; x < positions.length; x++)
+            {
+                tempLat += positions[x].geometry.location.lat();
+                tempLng += positions[x].geometry.location.lng();
+            }
+            tempLat /= positions.length;
+            tempLng /= positions.length;
+
+            return {lat: tempLat+.03, lng: tempLng+.07};
+        }
+        ///
+
         let app = new Vue({
             el: '#mqe-root',
             data: {
                 loading: false,
                 results: [],
                 type: "restaurant",
-                map: {},
+                map: map,
                 maxObjects: 0,
             },
             methods: {
+
                 doSearch() {
                     this.loading = true;
                     Result.search(this.type, { lat: 34.0522, lng: -118.2437 }, this.maxObjects)
-                        .then(r => this.results = r).then(_ => this.loading = false);
+                        .then(r => this.results = r).then(_ => this.loading = false);//.then(initMap());
+
                 }
+
             }
         });
 
-        // // Main structure of map functionality borrowed from Maps HW
-        // // Edited by Elliot Privateer
-        // // https://github.com/tonethar/IGME-330-Master/blob/master/notes/_files/Maps-1.pdf
-        // let map;
-        // let infoWindow;
-        // function initMap() {
-        //     let mapOptions = {
-        //         center: { lat: 37.0902, lng: -95.7129 },
-        //         zoom: 3,
-        //         mapTypeId: google.maps.MapTypeId.ROADMAP
-        //     };
-        //     map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-
-        //     // for future reference
-        //     // let position = {lat:43.082634, lng:-77.68004};
-        //     // let marker = new google.maps.Marker ({position:position, map: map});
-        //     // marker.setTitle("Crossroads");
-        // }
-
-        // function InfoWindow(position, msg) {
-        //     if (infoWindow) infoWindow.close();
-
-        //     infoWindow = new google.maps.InfoWindow({
-        //         map: map,
-        //         position: position,
-        //         content: "<b>" + msg + "</b>"
-        //     });
-        // }
+        ///
+        // default initialization
+        initMap({ lat: 37.0902, lng: -95.7129 }, 3);
+        ///
     </script>
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVRuIR2xgRM8xP8Djo-q86fP_ITSQoyKw&callback=initMap"
         async defer></script> -->
