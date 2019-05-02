@@ -418,7 +418,7 @@ input[type=text] {
 
 #map{
     margin: 0 auto;
-    width: 400px;
+    width: 71%;
     height: 400px;
     border-width: 8px;
     border-style: ridge;
