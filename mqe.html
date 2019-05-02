@@ -159,30 +159,30 @@
                 <div id="radios">
                     Radius:
                     <label class="radio"><strong>1</strong>
-                        <input type="radio" checked="checked" name="radio">
+                        <input type="radio" v-model="rad" checked="checked" name="radio" value="1">
                         <span class="check"></span>
                     </label>
-                    <label class="radio"><strong>5</strong>
-                        <input type="radio" name="radio">
+                    <label class="radio"><strong>1.5</strong>
+                        <input type="radio" v-model="rad"name="radio" value="1.5">
                         <span class="check"></span>
                     </label>
-                    <label class="radio"><strong>10</strong>
-                        <input type="radio" name="radio">
+                    <label class="radio"><strong>2</strong>
+                        <input type="radio" v-model="rad" name="radio" value="2">
                         <span class="check"></span>
                     </label>
                 </div>
                 <div id="radios2">
                     Amount:
                     <label class="radio"><strong>2</strong>
-                        <input type="radio" checked="checked" name="radio2">
+                        <input type="radio" v-model="amount" value="2" checked="checked" name="radio2">
                         <span class="check"></span>
                     </label>
                     <label class="radio"><strong>4</strong>
-                        <input type="radio" name="radio2">
+                        <input type="radio" v-model="amount" value="4" name="radio2">
                         <span class="check"></span>
                     </label>
                     <label class="radio"><strong>MAX</strong>
-                        <input type="radio" name="radio2">
+                        <input type="radio" v-model="amount" value="-1" name="radio2">
                         <span class="check"></span>
                     </label>
                 </div>
@@ -247,22 +247,31 @@
                 }
             }
 
-            static search(term, location, max) {
+            static search(term, location, max, radius, amount) {
                 let mapsPromise = new Promise((ok, err) => {
                     Result.PLACES_SVC.nearbySearch({
                         type: term,
                         location: location,
-                        radius: 25000 // meters
+                        radius: radius * 150 // meters
                     }, (res, status) => {
                         if (status == google.maps.places.PlacesServiceStatus.OK) {
                             console.log("res", res);
-                            console.log(location);
+                            //console.log(location);
                             this.maxObjects = res.length;
+                            let localObj = [];
+                            if(amount == -1)
+                                amount = this.maxObjects;
+
+                            for(let x = 0; x < amount; x++)
+                            {
+                                localObj[x] = res[x];
+                            }
+                            res = localObj;
                             ///
                             // Reinitialize map and add new markers based on new elements
                             // Edited by Elliot Privateer
-                            initMap(SetMap(res, map), 9.9);
-                            CreateMarkers(res, map);
+                            initMap(SetMap(res, map, amount), 13);
+                            CreateMarkers(res, map, amount);
                             ///
                             console.log(this.maxObjects);
                             ok(res);
@@ -289,7 +298,7 @@
                 this.earthquakes = eqs.map(e => {
                     e.distance = geo_distance(e, this.location);
                     return e;
-                }).filter(e => e.distance < 2500 /* miles */).sort((l, r) => l.distance - r.distance);
+                }).filter(e => e.distance < 900 /* miles */).sort((l, r) => l.distance - r.distance);
             }
         }
         Result.PLACES_SVC = new google.maps.places.PlacesService(document.querySelector("#gm-attrib"));
@@ -315,9 +324,12 @@
         // Creates a markers based on how many results are returned
         // from the search
         // Edited by Elliot Privateer
-        function CreateMarkers(positions, map) {
+        function CreateMarkers(positions, map, amount) {
             //console.log(positions[0].name);
-            for (let x = 0; x < positions.length; x++) {
+            if(amount == -1)
+                amount = positions.length;
+
+            for (let x = 0; x < amount; x++) {
                 // let position = {lat:43.082634, lng:-77.68004};
                 // let marker = new google.maps.Marker ({position:position, map: map});
                 // marker.setTitle("Crossroads");
@@ -338,7 +350,7 @@
             tempLat /= positions.length;
             tempLng /= positions.length;
 
-            return { lat: tempLat + .03, lng: tempLng + .07 };
+            return { lat: tempLat, lng: tempLng };
         }
         ///
 
@@ -351,6 +363,8 @@
                 searchLat: 34.0522,
                 searchLng: -118.2437,
                 map: map,
+                amount: 2,
+                rad: 1,
                 maxObjects: 0,
             },
             methods: {
@@ -359,7 +373,7 @@
                     this.loading = true;
                     // Result.search(this.type, { lat: 34.0522, lng: -118.2437 }, this.maxObjects)
                     //     .then(r => this.results = r).then(_ => this.loading = false);//.then(initMap());
-                    Result.search(this.type, { lat: parseFloat(this.searchLat), lng: parseFloat(this.searchLng) }, this.maxObjects)
+                    Result.search(this.type, { lat: parseFloat(this.searchLat), lng: parseFloat(this.searchLng) }, this.maxObjects, this.rad, this.amount)
                         .then(r => this.results = r).then(_ => this.loading = false);//.then(initMap());
                     
                 }
