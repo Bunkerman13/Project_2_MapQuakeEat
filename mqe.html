@@ -256,24 +256,30 @@
                     }, (res, status) => {
                         if (status == google.maps.places.PlacesServiceStatus.OK) {
                             console.log("res", res);
+                            ///
                             //console.log(location);
+                            // Create result array based on limitations from inputs
                             this.maxObjects = res.length;
                             let localObj = [];
                             if(amount == -1)
                                 amount = this.maxObjects;
-
+                            if(res.length <= amount)
+                                amount = res.length;
                             for(let x = 0; x < amount; x++)
                             {
+                                
                                 localObj[x] = res[x];
                             }
+
                             res = localObj;
-                            ///
+                            console.log(res);
+                            //console.log(res[0].opening_hours.open_now);
                             // Reinitialize map and add new markers based on new elements
                             // Edited by Elliot Privateer
-                            initMap(SetMap(res, map, amount), 13);
+                            initMap(SetMap(res, map, amount), 13, amount);
                             CreateMarkers(res, map, amount);
                             ///
-                            console.log(this.maxObjects);
+                            //console.log(this.maxObjects);
                             ok(res);
                         } else {
                             err({ code: status, data: res });
@@ -295,6 +301,9 @@
                 this.plus_code = raw_result.plus_code.global_code;
                 this.icon = raw_result.icon;
                 this.name = raw_result.name;
+                this.rating = raw_result.rating;
+                this.vicinity = raw_result.vicinity;
+                this.user_rating = raw_result.user_ratings_total;
                 this.earthquakes = eqs.map(e => {
                     e.distance = geo_distance(e, this.location);
                     return e;
@@ -311,6 +320,9 @@
             template: '<div class="search-result">' +
                 '<h3>{{ result.name }}</h3>' +
                 '<img v-bind:src="result.icon" />' +
+                '<p>Rating: {{result.rating}}</p>' +
+                '<p>Total User Rating: {{result.user_rating}}</p>' +
+                '<p id="address">Vicinity: {{result.vicinity}}</p>' +
                 '<p>{{ result.location_pretty }} ({{ result.plus_code }})</p>' +
                 '<ul>' +
                 '<li v-for="e in result.earthquakes" :key="e.id">' +
@@ -326,24 +338,31 @@
         // Edited by Elliot Privateer
         function CreateMarkers(positions, map, amount) {
             //console.log(positions[0].name);
-            if(amount == -1)
-                amount = positions.length;
+            // if(amount == -1)
+            //     amount = positions.length;
+            // if(positions.length <= amount)
+            //     amount = positions.length;
 
             for (let x = 0; x < amount; x++) {
                 // let position = {lat:43.082634, lng:-77.68004};
                 // let marker = new google.maps.Marker ({position:position, map: map});
                 // marker.setTitle("Crossroads");
-
+                
                 let position = { lat: positions[x].geometry.location.lat(), lng: positions[x].geometry.location.lng() };
                 let marker = new google.maps.Marker({ position: position, map: map });
                 marker.setTitle(positions[x].name);
             }
         }
 
-        function SetMap(positions, map) {
+        function SetMap(positions, map, amount) {
             let tempLat = 0;
             let tempLng = 0;
-            for (let x = 0; x < positions.length; x++) {
+            // if(amount == -1)
+            //     amount = positions.length;
+            // if(positions.length <= amount)
+            //     amount = positions.length;
+
+            for (let x = 0; x < amount; x++) {
                 tempLat += positions[x].geometry.location.lat();
                 tempLng += positions[x].geometry.location.lng();
             }

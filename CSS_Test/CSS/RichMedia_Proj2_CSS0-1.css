@@ -370,6 +370,11 @@ section {
 
 #results p {
     width: 90%;
+    margin: 0 auto;
+}
+
+#results img{
+    text-align: center;
 }
 
 #bar {
@@ -417,4 +422,8 @@ input[type=text] {
     height: 400px;
     border-width: 8px;
     border-style: ridge;
+}
+
+#address {
+    font-size: small;
 }
