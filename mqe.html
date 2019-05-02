@@ -5,6 +5,7 @@
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
     <link type="text/css" rel="stylesheet" href="CSS_Test/CSS/RichMedia_Proj2_CSS0-1.css">
+
     <script>
         ///
         // Main structure of map functionality borrowed from Maps HW
@@ -25,6 +26,7 @@
             // let position = {lat:43.082634, lng:-77.68004};
             // let marker = new google.maps.Marker ({position:position, map: map});
             // marker.setTitle("Crossroads");
+
         }
 
 
@@ -37,10 +39,15 @@
                 position: position,
                 content: "<b>" + msg + "</b>"
             });
+
+
+
+
         }
         ///
 
     </script>
+
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjncHpQdRfjHbDiAyXF8Q-n8UNZ1VHg0w&libraries=places"
         type="text/javascript"></script>
     <script src="//unpkg.com/@babel/polyfill@latest/dist/polyfill.min.js" type="text/javascript"></script>
@@ -81,35 +88,37 @@
                 <div id="radios2">
                     Amount:
                     <label class="radio"><strong>2</strong>
-                        <input type="radio" v-model="amount" value="2" checked="checked" name="radio2">
+                        <input type="radio" v-model.number="amount" value="2" checked="checked" name="radio2">
                         <span class="check"></span>
                     </label>
                     <label class="radio"><strong>4</strong>
-                        <input type="radio" v-model="amount" value="4" name="radio2">
+                        <input type="radio" v-model.number="amount" value="4" name="radio2">
                         <span class="check"></span>
                     </label>
                     <label class="radio"><strong>MAX</strong>
-                        <input type="radio" v-model="amount" value="-1" name="radio2">
+                        <input type="radio" v-model.number="amount" value="-1" name="radio2">
                         <span class="check"></span>
                     </label>
                 </div>
                 <div id="range">
-
-                    <div class="slidecontainer">Zoom Slider: <strong>-</strong>
+                    <div class="slidecontainer">
+                        Zoom Slider: <strong>-</strong>
                         <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                        <strong>+</strong></div>
-
+                        <strong>+</strong>
+                    </div>
                 </div>
-
-
             </section>
             <div id="map"></div>
         </div>
         <div id="results">
             <div id="gm-attrib"></div>
-            <div id="loading" v-show="loading">Loading...</div>
-            <search-result v-for="result in results" v-bind:result="result"></search-result>
-            <div v-if="errorMsg">{{ errorMsg }}</div>
+            <div id="loading" v-show="loading">
+                <h2>Loading...</h2>
+            </div>
+            <div v-if="errorMsg">
+                <h2>{{ errorMsg }}</h2>
+            </div>
+            <search-result v-for="result in results" v-bind:result="result" @show-eqs="QuakeMarkers"></search-result>
         </div>
     </div>
     <script src="JS/map.js"></script>
@@ -138,20 +147,19 @@
         class Result {
             static _getEarthquakes() {
                 if (Result.earthquakes) {
-                    return Promise.resolve(Result.earthquakes);
+                    return Result.earthquakes;
                 } else {
-                    return fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson')
+                    return Result.earthquakes = fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson')
                         .then(r => r.json())
                         .then(res => res.features.map(f => {
                             return {
                                 mag: f.properties.mag,
                                 location: f.properties.place,
-                                lat: f.geometry.coordinates[0],
-                                lng: f.geometry.coordinates[1],
+                                lng: f.geometry.coordinates[0],
+                                lat: f.geometry.coordinates[1],
                                 id: f.properties.id,
                             };
-                        }))
-                        .then(eqs => Result.earthquakes = eqs);
+                        }));
                 }
             }
 
@@ -163,30 +171,6 @@
                         radius: radius * 150 // meters
                     }, (res, status) => {
                         if (status == google.maps.places.PlacesServiceStatus.OK) {
-                            console.log("res", res);
-                            ///
-                            //console.log(location);
-                            // Create result array based on limitations from inputs
-                            this.maxObjects = res.length;
-                            let localObj = [];
-                            if (amount == -1)
-                                amount = this.maxObjects;
-                            if (res.length <= amount)
-                                amount = res.length;
-                            for (let x = 0; x < amount; x++) {
-
-                                localObj[x] = res[x];
-                            }
-
-                            res = localObj;
-                            console.log(res);
-                            //console.log(res[0].opening_hours.open_now);
-                            // Reinitialize map and add new markers based on new elements
-                            // Edited by Elliot Privateer
-                            initMap(SetMap(res, map, amount), 13, amount);
-                            CreateMarkers(res, map, amount);
-                            ///
-                            //console.log(this.maxObjects);
                             ok(res);
                         } else {
                             err({ code: status, data: res });
@@ -200,11 +184,13 @@
             }
 
             constructor(raw_result, eqs) {
-                this.location = {
-                    lat: raw_result.geometry.location.lat(),
-                    lng: raw_result.geometry.location.lng(),
-                };
-                this.location_pretty = `${Math.abs(this.location.lat).toFixed(4)} ${this.location.lat < 0 ? 'E' : 'W'}, ${Math.abs(this.location.lng).toFixed(4)} ${this.location.lng < 0 ? 'N' : 'S'}`
+                // this.location = {
+                //     lat: raw_result.geometry.location.lat(),
+                //     lng: raw_result.geometry.location.lng(),
+                // };
+                this.lat = raw_result.geometry.location.lat();
+                this.lng = raw_result.geometry.location.lng();
+                this.location_pretty = `${Math.abs(this.lat).toFixed(4)} ${this.lat < 0 ? 'E' : 'W'}, ${Math.abs(this.lng).toFixed(4)} ${this.lng < 0 ? 'N' : 'S'}`
                 this.plus_code = raw_result.plus_code.global_code;
                 this.icon = raw_result.icon;
                 this.name = raw_result.name;
@@ -212,9 +198,9 @@
                 this.vicinity = raw_result.vicinity;
                 this.user_rating = raw_result.user_ratings_total;
                 this.earthquakes = eqs.map(e => {
-                    e.distance = geo_distance(e, this.location);
+                    e.distance = geo_distance(e, this);
                     return e;
-                }).filter(e => e.distance < 900 /* miles */).sort((l, r) => l.distance - r.distance);
+                }).filter(e => e.distance < 1000 /* miles */).sort((l, r) => l.distance - r.distance).slice(0, 10);
             }
         }
         Result.PLACES_SVC = new google.maps.places.PlacesService(document.querySelector("#gm-attrib"));
@@ -224,9 +210,10 @@
                 result: Object,
                 required: true,
             },
-            template: '<div class="search-result col-sm-12">' +
+            template: '<div class="search-result col-8 col-sm-8 col-md-5 col-lg-3">' +
                 '<h3>{{ result.name }}</h3>' +
                 '<img v-bind:src="result.icon" />' +
+                '<button @click="$emit(\'show-eqs\', result.earthquakes)">button</button>' +
                 '<p>Rating: {{result.rating}}</p>' +
                 '<p>Total User Rating: {{result.user_rating}}</p>' +
                 '<p id="address">Address: {{result.vicinity}}</p>' +
@@ -243,35 +230,22 @@
         // Creates a markers based on how many results are returned
         // from the search
         // Edited by Elliot Privateer
-        function CreateMarkers(positions, map, amount) {
-            //console.log(positions[0].name);
-            // if(amount == -1)
-            //     amount = positions.length;
-            // if(positions.length <= amount)
-            //     amount = positions.length;
-
-            for (let x = 0; x < amount; x++) {
-                // let position = {lat:43.082634, lng:-77.68004};
-                // let marker = new google.maps.Marker ({position:position, map: map});
-                // marker.setTitle("Crossroads");
-
-                let position = { lat: positions[x].geometry.location.lat(), lng: positions[x].geometry.location.lng() };
-                let marker = new google.maps.Marker({ position: position, map: map });
+        function CreateMarkers(positions, map) {
+            console.log(positions);
+            for (let x = 0; x < positions.length; x++) {
+                let position = { lat: positions[x].lat, lng: positions[x].lng };
+                let marker = new google.maps.Marker({ position: position, map: map, icon: { url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" } });
                 marker.setTitle(positions[x].name);
             }
         }
 
-        function SetMap(positions, map, amount) {
+        function SetMap(positions, map) {
             let tempLat = 0;
             let tempLng = 0;
-            // if(amount == -1)
-            //     amount = positions.length;
-            // if(positions.length <= amount)
-            //     amount = positions.length;
 
-            for (let x = 0; x < amount; x++) {
-                tempLat += positions[x].geometry.location.lat();
-                tempLng += positions[x].geometry.location.lng();
+            for (let x = 0; x < positions.length; x++) {
+                tempLat += positions[x].lat;
+                tempLng += positions[x].lng;
             }
             tempLat /= positions.length;
             tempLng /= positions.length;
@@ -291,11 +265,13 @@
                 map: map,
                 amount: 2,
                 rad: 1,
+                currentQuakeData: {},
+                count: 0,
                 maxObjects: 0,
                 valid_types: [
                     // has to be hardcoded, but at least it's stable
                     "accounting", "airport", "amusement_park", "aquarium", "art_gallery", "atm", "bakery", "bank", "bar", "beauty_salon", "bicycle_store", "book_store", "bowling_alley", "bus_station", "cafe", "campground", "car_dealer", "car_rental", "car_repair", "car_wash", "casino", "cemetery", "church", "city_hall", "clothing_store", "convenience_store", "courthouse", "dentist", "department_store", "doctor", "electrician", "electronics_store", "embassy", "fire_station", "florist", "funeral_home", "furniture_store", "gas_station", "gym", "hair_care", "hardware_store", "hindu_temple", "home_goods_store", "hospital", "insurance_agency", "jewelry_store", "laundry", "lawyer", "library", "liquor_store", "local_government_office", "locksmith", "lodging", "meal_delivery", "meal_takeaway", "mosque", "movie_rental", "movie_theater", "moving_company", "museum", "night_club", "painter", "park", "parking", "pet_store", "pharmacy", "physiotherapist", "plumber", "police", "post_office", "real_estate_agency", "restaurant", "roofing_contractor", "rv_park", "school", "shoe_store", "shopping_mall", "spa", "stadium", "storage", "store", "subway_station", "supermarket", "synagogue", "taxi_stand", "train_station", "transit_station", "travel_agency", "veterinary_care", "zoo"
-                ].map(v => {return{ value: v, pretty_name: v.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") };}),
+                ].map(v => { return { value: v, pretty_name: v.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") }; }),
                 errorMsg: "",
             },
             methods: {
@@ -304,15 +280,49 @@
                     // Result.search(this.type, { lat: 34.0522, lng: -118.2437 }, this.maxObjects)
                     //     .then(r => this.results = r).then(_ => this.loading = false);//.then(initMap());
                     Result.search(this.type, { lat: parseFloat(this.searchLat), lng: parseFloat(this.searchLng) }, this.maxObjects, this.rad, this.amount)
-                        .then(r => this.results = r).then(_ => this.loading = false);//.then(initMap());
+                        .then(res => {
+                            // console.log(res);
+                            this.loading = false;
+                            ///
+
+                            if (this.amount != -1)
+                                this.results = res.slice(0, this.amount);
+                            else
+                                this.results = res;
+
+                            this.errorMsg = "Results Displayed: " + this.results.length;
+
+
+                            // Reinitialize map and add new markers based on new elements
+                            // Edited by Elliot Privateer
+                            initMap(SetMap(this.results, map), 16);
+                            CreateMarkers(this.results, map);
+                            ///
+                            //console.log(this.maxObjects);
+                        }).catch(err => {
+                            this.errorMsg = err;//.code.split("_").map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(" ");
+                            throw err;
+                        });
+                },
+                QuakeMarkers(earthquakes) {
+                    initMap(SetMap(this.results, map), 10);
+                    CreateMarkers(this.results, map);
+
+                    console.log(earthquakes);
+                    for (let x = 0; x < earthquakes.length; x++) {
+                        let position = { lat: earthquakes[x].lat, lng: earthquakes[x].lng };
+                        let marker = new google.maps.Marker({ position: position, map: map });
+                    }
+                    
 
                 }
             }
         });
-
         ///
         // default initialization
         initMap({ lat: 37.0902, lng: -95.7129 }, 3);
+
+
         ///
     </script>
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVRuIR2xgRM8xP8Djo-q86fP_ITSQoyKw&callback=initMap"

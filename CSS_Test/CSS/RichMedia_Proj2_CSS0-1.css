@@ -353,7 +353,6 @@ section {
 /*Start: Generic - Results*/
 .search-result {
     border-width: 5px;
-    width: 35%;
     display: inline-block;
     vertical-align: top;
     text-align: center;
@@ -366,6 +365,12 @@ section {
 #search,
 #results {
     text-align: center;
+
+}
+
+#results {
+    width: 100%;
+    margin: 0 auto;
 }
 
 #results p {
