@@ -225,14 +225,16 @@
                 result: Object,
                 required: true,
             },
-            template: '<div class="search-result col-8 col-sm-8 col-md-5 col-lg-3">' +
+            template: '<div class="search-result">' +
+                '<div id="place-info">' +
                 '<h3>{{ result.name }}</h3>' +
                 '<img v-bind:src="result.icon" />' +
-                '<button @click="$emit(\'show-eqs\', result.earthquakes)">button</button>' +
                 '<p>Rating: {{result.rating}}</p>' +
                 '<p>Total User Rating: {{result.user_rating}}</p>' +
                 '<p id="address">Address: {{result.vicinity}}</p>' +
                 '<p>{{ result.location_pretty }} ({{ result.plus_code }})</p>' +
+                '</div>' +
+                '<button @click="$emit(\'show-eqs\', result.earthquakes)">Show on Map</button>' +
                 '<ul>' +
                 '<li v-for="e in result.earthquakes" :key="e.id">' +
                 'Magnitude {{ e.mag }}, location: {{ e.location }} ({{ e.distance.toFixed(2) }} miles away)' +
