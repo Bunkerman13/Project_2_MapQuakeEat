@@ -5,6 +5,11 @@ textarea:focus,
 button:focus {
     outline: none;
 }
+
+select {
+    width: 100%;
+}
+
 /*End: General*/
 
 /*Start: Button*/
@@ -329,24 +334,43 @@ input[type=search]:focus
 /*Start: Generic - Search*/
 section {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
+}
+
+#search {
+    float: left;
+    width: 40%;
+    height: 100vh;
+    border-width: 10px;
+    border-style: ridge;
+}
+
+#searchButton {
+    margin-top: 10%;
+}
+
+#coords {
+    margin-top: 10%;
 }
 
 #radios {
     order: 1;
+    
 }
 
 #radios2 {
     order: 3;
+    margin-top: 10%;
 }
 
 #range {
     order: 2;
+    
 }
 
-#radios, #radios2, #range {
-    margin: 0 auto;
+#radios, #range {
+    margin-top: 10%;
 }
 /*End: Generoc - Search*/
 
@@ -369,9 +393,17 @@ section {
 }
 
 #results {
-    width: 100%;
-    margin: 0 auto;
+    width: 60%;
+    float: right;
+    overflow-y: scroll;
+    height: 100%;
+    border-width: 10px;
+    border-style: ridge;
 }
+
+/* #displayed-results {
+    overflow-y: scroll;
+} */
 
 #results p {
     width: 90%;
@@ -383,16 +415,12 @@ section {
 }
 
 #bar {
-    height: 50px;
+    height: 30px;
+    margin-top: 10%;
 }
 
 .slidecontainer strong{
     font-size: x-large;
-}
-
-#results {
-    /* padding: 100px; */
-    height: 100%;
 }
 
 ul {
@@ -406,6 +434,7 @@ ul {
 
 h1 {
     text-align: center;
+    margin-top: 10%;
 }
 
 h3 {
@@ -421,14 +450,28 @@ input[type=text] {
 }
 /*End - text*/
 
-#map{
+#mqe-root {
+    height: 40%;
+}
+
+body{
+    height: 100vh;
+}
+
+#map {
     margin: 0 auto;
-    width: 71%;
-    height: 400px;
+    width: 60%;
+    height: 60%;
     border-width: 8px;
     border-style: ridge;
+    float: right;
 }
 
 #address {
     font-size: small;
+}
+
+#innerSearch {
+    height: 100%;
+    margin: 15% 10% 0% 10%;
 }

@@ -59,56 +59,66 @@
 
 <body>
     <div id="mqe-root">
-        <h1>Map, Quake, Find</h1>
+
         <div id="search">
-            <div id="bar">
-                <select v-model="type">
-                    <option v-for="option in valid_types" v-bind:value="option.value">{{option.pretty_name}}</option>
-                </select>
-                <label><input type="text" v-model="searchLat">Lat</label>
-                <label><input type="text" v-model="searchLng">Lng</label>
-                <button @click="doSearch">Search</button>
-            </div>
-            <section>
-                <div id="radios">
-                    Radius:
-                    <label class="radio"><strong>1</strong>
-                        <input type="radio" v-model="rad" checked="checked" name="radio" value="1">
-                        <span class="check"></span>
-                    </label>
-                    <label class="radio"><strong>1.5</strong>
-                        <input type="radio" v-model="rad" name="radio" value="1.5">
-                        <span class="check"></span>
-                    </label>
-                    <label class="radio"><strong>2</strong>
-                        <input type="radio" v-model="rad" name="radio" value="2">
-                        <span class="check"></span>
-                    </label>
+            <div id="innerSearch">
+                <h1>Map, Quake, Find</h1>
+                <div id="bar">
+                    <select v-model="type">
+                        <option v-for="option in valid_types" v-bind:value="option.value">{{option.pretty_name}}
+                        </option>
+                    </select>
+
                 </div>
-                <div id="radios2">
-                    Amount:
-                    <label class="radio"><strong>2</strong>
-                        <input type="radio" v-model.number="amount" value="2" checked="checked" name="radio2">
-                        <span class="check"></span>
-                    </label>
-                    <label class="radio"><strong>4</strong>
-                        <input type="radio" v-model.number="amount" value="4" name="radio2">
-                        <span class="check"></span>
-                    </label>
-                    <label class="radio"><strong>MAX</strong>
-                        <input type="radio" v-model.number="amount" value="-1" name="radio2">
-                        <span class="check"></span>
-                    </label>
+                <div id="coords">
+                    <!-- class="col-8 col-sm-8 col-md-5 col-lg-3" -->
+                    <label class="col-lg-10">Latitude[<input type="text" v-model="searchLat">]</label>
+                    <label class="col-lg-10">Longitude[<input type="text" v-model="searchLng">]</label>
                 </div>
-                <div id="range">
-                    <div class="slidecontainer">
-                        Zoom Slider: <strong>-</strong>
-                        <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
-                        <strong>+</strong>
+
+                <section>
+                    <div id="radios">
+                        Search Radius <br />
+                        <label class="radio"><strong>1</strong>
+                            <input type="radio" v-model="rad" checked="checked" name="radio" value="1">
+                            <span class="check"></span>
+                        </label>
+                        <label class="radio"><strong>1.5</strong>
+                            <input type="radio" v-model="rad" name="radio" value="1.5">
+                            <span class="check"></span>
+                        </label>
+                        <label class="radio"><strong>2</strong>
+                            <input type="radio" v-model="rad" name="radio" value="2">
+                            <span class="check"></span>
+                        </label>
                     </div>
-                </div>
-            </section>
-            <div id="map"></div>
+                    <div id="radios2">
+                        Amount of Results <br />
+                        <label class="radio"><strong>2</strong>
+                            <input type="radio" v-model.number="amount" value="2" checked="checked" name="radio2">
+                            <span class="check"></span>
+                        </label>
+                        <label class="radio"><strong>4</strong>
+                            <input type="radio" v-model.number="amount" value="4" name="radio2">
+                            <span class="check"></span>
+                        </label>
+                        <label class="radio"><strong>MAX</strong>
+                            <input type="radio" v-model.number="amount" value="-1" name="radio2">
+                            <span class="check"></span>
+                        </label>
+                    </div>
+                    <div id="range">
+                        <div class="slidecontainer">
+                            <strong>-</strong> Zoom Slider <strong>+</strong> <br />
+                            <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+
+                        </div>
+                    </div>
+                </section>
+                <button id="searchButton" @click="doSearch">Search</button>
+            </div>
+
+
         </div>
         <div id="results">
             <div id="gm-attrib"></div>
@@ -118,9 +128,14 @@
             <div v-if="errorMsg">
                 <h2>{{ errorMsg }}</h2>
             </div>
-            <search-result v-for="result in results" v-bind:result="result" @show-eqs="QuakeMarkers"></search-result>
+
+            <search-result v-for="result in results" v-bind:result="result" @show-eqs="QuakeMarkers">
+            </search-result>
+
         </div>
     </div>
+    <div id="map"></div>
+
     <script src="JS/map.js"></script>
 
     <script>
@@ -313,7 +328,7 @@
                         let position = { lat: earthquakes[x].lat, lng: earthquakes[x].lng };
                         let marker = new google.maps.Marker({ position: position, map: map });
                     }
-                    
+
 
                 }
             }
