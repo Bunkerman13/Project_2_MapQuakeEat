@@ -15,15 +15,16 @@ select {
 /*Start: Button*/
 button{
     background-color: rgb(216, 216, 216);
-    color: grey;
+    color: black;
     width: 66.5px;
     height: 33px; 
-    border: none;
+    border: 1px solid black;
     padding-left: 3px;
     padding-right: 3px;
 }
 
 button:hover{
+    border: none;
     background-color: rgb(231, 231, 231);
     border-width: 2px;
     border-style: ridge;
