@@ -20,13 +20,12 @@
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-
             // for future reference
             // let position = {lat:43.082634, lng:-77.68004};
             // let marker = new google.maps.Marker ({position:position, map: map});
             // marker.setTitle("Crossroads");
-
+            google.maps.event.addListener(map, 'dragend', function(){app.searchLat = map.center.lat(); app.searchLng = map.center.lng();});
+            google.maps.event.addListener(map, 'zoom_changed', function(){app.zoom = map.getZoom();});
         }
 
 
@@ -72,8 +71,10 @@
                 </div>
                 <div id="coords">
                     <!-- class="col-8 col-sm-8 col-md-5 col-lg-3" -->
+
                     <label class="col-lg-10">Latitude[<input type="text" v-model="searchLat">]</label>
                     <label class="col-lg-10">Longitude[<input type="text" v-model="searchLng">]</label>
+                
                 </div>
 
                 <section>
@@ -110,7 +111,7 @@
                     <div id="range">
                         <div class="slidecontainer">
                             <strong>-</strong> Zoom Slider <strong>+</strong> <br />
-                            <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+                            <input type="range" min="1" max="20" value="1" class="slider" id="myRange" v-model.number="zoom">
 
                         </div>
                     </div>
@@ -139,6 +140,11 @@
     <script src="JS/map.js"></script>
 
     <script>
+        ///
+        // default initialization
+        initMap({ lat: 34.0522, lng: -118.2437 }, 1);
+        ///
+
         function d2r(degrees) {
             return degrees / 180 * Math.PI;
         }
@@ -248,12 +254,20 @@
         // from the search
         // Edited by Elliot Privateer
         function CreateMarkers(positions, map) {
-            console.log(positions);
+            // console.log(positions);
+            //let bounds = new google.maps.LatLngBounds();
             for (let x = 0; x < positions.length; x++) {
                 let position = { lat: positions[x].lat, lng: positions[x].lng };
+                //bounds.extend(position);
                 let marker = new google.maps.Marker({ position: position, map: map, icon: { url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" } });
                 marker.setTitle(positions[x].name);
+                //console.log("check");
             }
+
+            
+            //map.fitBounds(bounds);
+            this.zoom = map.getZoom();
+            //console.log(this.zoom);
         }
 
         function SetMap(positions, map) {
@@ -269,19 +283,29 @@
 
             return { lat: tempLat, lng: tempLng };
         }
-        ///
 
+        function updateMap() {
+        //    this.searchLat = this.map.center.lat();
+        //    this.map.center.lat() = this.searchLat;
+           
+            this.map.panTo(new google.maps.LatLng(this.searchLat, this.searchLng));
+            
+           
+        }
+        ///
+        //console.log(map);
         let app = new Vue({
             el: '#mqe-root',
             data: {
                 loading: false,
                 results: [],
                 type: "restaurant",
+                map: map,
                 searchLat: 34.0522,
                 searchLng: -118.2437,
-                map: map,
                 amount: 2,
                 rad: 1,
+                zoom: 1,
                 currentQuakeData: {},
                 count: 0,
                 maxObjects: 0,
@@ -291,7 +315,24 @@
                 ].map(v => { return { value: v, pretty_name: v.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ") }; }),
                 errorMsg: "",
             },
+            watch: {
+                searchLat: updateMap,
+                searchLng: updateMap,
+                zoom: function() {
+                    this.map.setZoom(this.zoom);
+                },
+                // searchLat() {
+                //     console.log(this.searchLat);
+                    
+                // },
+                // searchLng() {
+                //     console.log(map.center.lat());
+                // }
+            },
             methods: {
+                // centerMap() {
+                //     this.map.setCenter(new google.maps.LatLng(this.searchLat, this.searchLng));
+                // },
                 doSearch() {
                     this.loading = true;
                     // Result.search(this.type, { lat: 34.0522, lng: -118.2437 }, this.maxObjects)
@@ -313,7 +354,9 @@
                             // Reinitialize map and add new markers based on new elements
                             // Edited by Elliot Privateer
                             initMap(SetMap(this.results, map), 16);
+                            this.zoom = 16;
                             CreateMarkers(this.results, map);
+                            this.map = map;
                             ///
                             //console.log(this.maxObjects);
                         }).catch(err => {
@@ -322,25 +365,23 @@
                         });
                 },
                 QuakeMarkers(earthquakes) {
-                    initMap(SetMap(this.results, map), 10);
+                    initMap(SetMap(this.results, map));
                     CreateMarkers(this.results, map);
-
-                    console.log(earthquakes);
+                    this.map = map;
+                    //console.log(earthquakes);
+                    let bounds = new google.maps.LatLngBounds();
                     for (let x = 0; x < earthquakes.length; x++) {
                         let position = { lat: earthquakes[x].lat, lng: earthquakes[x].lng };
+                        bounds.extend(position);
                         let marker = new google.maps.Marker({ position: position, map: map });
                     }
 
-
+                    map.fitBounds(bounds);
+                    this.zoom = map.getZoom();
                 }
             }
         });
-        ///
-        // default initialization
-        initMap({ lat: 37.0902, lng: -95.7129 }, 3);
 
-
-        ///
     </script>
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVRuIR2xgRM8xP8Djo-q86fP_ITSQoyKw&callback=initMap"
         async defer></script> -->
