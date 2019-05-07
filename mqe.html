@@ -4,7 +4,7 @@
 <head>
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css" />
     <link type="text/css" rel="stylesheet" href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css" />
-    <link type="text/css" rel="stylesheet" href="CSS_Test/CSS/RichMedia_Proj2_CSS0-1.css">
+    <link type="text/css" rel="stylesheet" href="CSS/RichMedia_Proj2_CSS0-1.css">
 
     <script>
         ///
@@ -13,23 +13,25 @@
         // https://github.com/tonethar/IGME-330-Master/blob/master/notes/_files/Maps-1.pdf
         let map;
         let infoWindow;
+        // FUNCTION: initMap
+        // PURPOSE: sets up values for new map to be displayed
         function initMap(loc, zoom) {
+            // sets up default values for map display
             let mapOptions = {
                 center: loc,//{ lat: 37.0902, lng: -95.7129 },
                 zoom: zoom,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
+            // initializes new map
             map = new google.maps.Map(document.getElementById('map'), mapOptions);
-            // for future reference
-            // let position = {lat:43.082634, lng:-77.68004};
-            // let marker = new google.maps.Marker ({position:position, map: map});
-            // marker.setTitle("Crossroads");
-            google.maps.event.addListener(map, 'dragend', function(){app.searchLat = map.center.lat(); app.searchLng = map.center.lng();});
-            google.maps.event.addListener(map, 'zoom_changed', function(){app.zoom = map.getZoom();});
+
+            // Re-add event listeners when new map is created
+            google.maps.event.addListener(map, 'dragend', function () { app.searchLat = map.center.lat(); app.searchLng = map.center.lng(); });
+            google.maps.event.addListener(map, 'zoom_changed', function () { app.zoom = map.getZoom(); });
         }
 
-
-
+        // FUNCTION: InfoWindow
+        // PURPOSE: displays map to screen
         function InfoWindow(position, msg) {
             if (infoWindow) infoWindow.close();
 
@@ -38,10 +40,6 @@
                 position: position,
                 content: "<b>" + msg + "</b>"
             });
-
-
-
-
         }
         ///
 
@@ -70,11 +68,9 @@
 
                 </div>
                 <div id="coords">
-                    <!-- class="col-8 col-sm-8 col-md-5 col-lg-3" -->
-
                     <label class="col-lg-10">Latitude[<input type="text" v-model="searchLat">]</label>
                     <label class="col-lg-10">Longitude[<input type="text" v-model="searchLng">]</label>
-                
+
                 </div>
 
                 <section>
@@ -111,7 +107,8 @@
                     <div id="range">
                         <div class="slidecontainer">
                             <strong>-</strong> Zoom Slider <strong>+</strong> <br />
-                            <input type="range" min="1" max="20" value="1" class="slider" id="myRange" v-model.number="zoom">
+                            <input type="range" min="1" max="20" value="1" class="slider" id="myRange"
+                                v-model.number="zoom">
 
                         </div>
                     </div>
@@ -141,7 +138,8 @@
 
     <script>
         ///
-        // default initialization
+        // Created by Elliot Privateer
+        // default initialization of map
         initMap({ lat: 34.0522, lng: -118.2437 }, 1);
         ///
 
@@ -205,10 +203,6 @@
             }
 
             constructor(raw_result, eqs) {
-                // this.location = {
-                //     lat: raw_result.geometry.location.lat(),
-                //     lng: raw_result.geometry.location.lng(),
-                // };
                 this.lat = raw_result.geometry.location.lat();
                 this.lng = raw_result.geometry.location.lng();
                 this.location_pretty = `${Math.abs(this.lat).toFixed(4)} ${this.lat < 0 ? 'E' : 'W'}, ${Math.abs(this.lng).toFixed(4)} ${this.lng < 0 ? 'N' : 'S'}`
@@ -250,50 +244,50 @@
         });
 
         ///
-        // Creates a markers based on how many results are returned
+        // Created by Elliot Privateer
+
+        // FUNCTION: CreateMarkers
+        // PURPOSE: Creates a markers based on how many results are returned
         // from the search
-        // Edited by Elliot Privateer
         function CreateMarkers(positions, map) {
-            // console.log(positions);
-            //let bounds = new google.maps.LatLngBounds();
+            // goes through all locations and creates markers from them
             for (let x = 0; x < positions.length; x++) {
                 let position = { lat: positions[x].lat, lng: positions[x].lng };
-                //bounds.extend(position);
                 let marker = new google.maps.Marker({ position: position, map: map, icon: { url: "http://maps.google.com/mapfiles/ms/icons/green-dot.png" } });
                 marker.setTitle(positions[x].name);
-                //console.log("check");
             }
-
-            
-            //map.fitBounds(bounds);
+            // sets the vue zoom to the current zoom of the map
             this.zoom = map.getZoom();
-            //console.log(this.zoom);
         }
 
+        // FUNCTION: SetMap
+        // PURPOSE: finds the average center between all found locations 
         function SetMap(positions, map) {
+            // creates temp values
             let tempLat = 0;
             let tempLng = 0;
 
+            // goes through each location and adds their positions together
             for (let x = 0; x < positions.length; x++) {
                 tempLat += positions[x].lat;
                 tempLng += positions[x].lng;
             }
+
+            // divide them by the size of the array to get the average position
             tempLat /= positions.length;
             tempLng /= positions.length;
 
+            // returns position object for the map to focus on
             return { lat: tempLat, lng: tempLng };
         }
 
-        function updateMap() {
-        //    this.searchLat = this.map.center.lat();
-        //    this.map.center.lat() = this.searchLat;
-           
+        // FUNCTION: UpdateMapPos
+        // PURPOSE: updates the center of the map based on the coordinate inputs
+        function UpdateMapPos() {
             this.map.panTo(new google.maps.LatLng(this.searchLat, this.searchLng));
-            
-           
         }
         ///
-        //console.log(map);
+
         let app = new Vue({
             el: '#mqe-root',
             data: {
@@ -316,33 +310,26 @@
                 errorMsg: "",
             },
             watch: {
-                searchLat: updateMap,
-                searchLng: updateMap,
-                zoom: function() {
+                ///
+                // Created by Elliot Privateer
+                searchLat: UpdateMapPos,
+                searchLng: UpdateMapPos,
+                // sets the map zoom to the vue zoom value 
+                zoom: function () {
                     this.map.setZoom(this.zoom);
                 },
-                // searchLat() {
-                //     console.log(this.searchLat);
-                    
-                // },
-                // searchLng() {
-                //     console.log(map.center.lat());
-                // }
+                ///
             },
             methods: {
-                // centerMap() {
-                //     this.map.setCenter(new google.maps.LatLng(this.searchLat, this.searchLng));
-                // },
                 doSearch() {
                     this.loading = true;
-                    // Result.search(this.type, { lat: 34.0522, lng: -118.2437 }, this.maxObjects)
-                    //     .then(r => this.results = r).then(_ => this.loading = false);//.then(initMap());
+
                     Result.search(this.type, { lat: parseFloat(this.searchLat), lng: parseFloat(this.searchLng) }, this.maxObjects, this.rad, this.amount)
                         .then(res => {
-                            // console.log(res);
                             this.loading = false;
                             ///
-
+                            // Edited by Elliot Privateer
+                            // checks how many results to show and cuts array down to hold selected amount of results
                             if (this.amount != -1)
                                 this.results = res.slice(0, this.amount);
                             else
@@ -352,23 +339,28 @@
 
 
                             // Reinitialize map and add new markers based on new elements
-                            // Edited by Elliot Privateer
                             initMap(SetMap(this.results, map), 16);
                             this.zoom = 16;
                             CreateMarkers(this.results, map);
                             this.map = map;
                             ///
-                            //console.log(this.maxObjects);
                         }).catch(err => {
                             this.errorMsg = err;//.code.split("_").map(w => w.charAt(0) + w.slice(1).toLowerCase()).join(" ");
                             throw err;
                         });
                 },
+                ///
+                // Created by Elliot Privateer
+                // FUNCTION: QuakeMarkers
+                // PURPOSE: Creates markers on the map for the earthquakes
                 QuakeMarkers(earthquakes) {
+                    // reinitalizes map and creates location markers
                     initMap(SetMap(this.results, map));
                     CreateMarkers(this.results, map);
                     this.map = map;
-                    //console.log(earthquakes);
+
+                    // creates markers for the earthquakes
+                    // uses google api bounds method to set zoom distance
                     let bounds = new google.maps.LatLngBounds();
                     for (let x = 0; x < earthquakes.length; x++) {
                         let position = { lat: earthquakes[x].lat, lng: earthquakes[x].lng };
@@ -376,15 +368,15 @@
                         let marker = new google.maps.Marker({ position: position, map: map });
                     }
 
+                    // fits map zoom and sets vue zoom to current map zoom
                     map.fitBounds(bounds);
                     this.zoom = map.getZoom();
                 }
+                ///
             }
         });
 
     </script>
-    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCVRuIR2xgRM8xP8Djo-q86fP_ITSQoyKw&callback=initMap"
-        async defer></script> -->
 </body>
 
 </html>
